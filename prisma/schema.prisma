@@ -18,6 +18,9 @@ model User {
   name     String
   password String
   iconImg  String
+  isAlowed Boolean
+  emailStatus Boolean
+  code String
   yourQuiz Quiz[]
 }
 

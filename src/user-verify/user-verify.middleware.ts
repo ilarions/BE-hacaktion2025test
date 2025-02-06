@@ -16,10 +16,8 @@ export class UserVerifyMiddleware implements NestMiddleware {
       if (!token) {
         throw new UnauthorizedException('Token is required');
       }
-      console.log(token);
-      console.log(process.env.SECRET);
+
       const decoded = jwt.verify(token, process.env.SECRET);
-      console.log(decoded);
       if (!decoded) {
         throw new UnauthorizedException('Token is required');
       }
@@ -28,7 +26,7 @@ export class UserVerifyMiddleware implements NestMiddleware {
           id: decoded.id,
         },
       });
-      if (!user) {
+      if (!user || !user.isAlowed) {
         throw new UnauthorizedException('User not found');
       }
       req.user = user;
