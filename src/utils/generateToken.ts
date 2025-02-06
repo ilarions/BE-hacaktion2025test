@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 export interface IGenerateToken {
   id: string;
@@ -6,11 +6,10 @@ export interface IGenerateToken {
   time: string;
 }
 
-export const generateToken = (
-  id: string,
-  secret: string,
-  time: string,
-): string => {
-  const token = jwt.sign({ id: id }, secret, { expiresIn: time });
-  return token;
+export const generateToken = ({ id, secret, time }: IGenerateToken): string => {
+  if (!secret) {
+    throw new Error('JWT secret is required.');
+  }
+
+  return jwt.sign({ id }, secret, { expiresIn: time });
 };
