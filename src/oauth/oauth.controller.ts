@@ -20,8 +20,8 @@ export class OauthController {
 
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
-  googleCallback(@Req() req, @Res() res) {
-    //  const response = await this.authService.login(req.user.id);
-    // res.redirect(`http://localhost:5173?token=${response.accessToken}`);
+  async googleCallback(@Req() req, @Res() res) {
+    const response = await this.oauthService.login(req.user);
+    res.redirect(`${process.env.PORT_FRONTEND}?token=${response}`);
   }
 }

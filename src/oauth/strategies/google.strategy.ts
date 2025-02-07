@@ -7,12 +7,14 @@ import {
 } from 'passport-google-oauth20';
 import googleOauthConfig from '../config/google-oauth.config';
 import { ConfigType } from '@nestjs/config';
+import { OauthService } from '../oauth.service';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
     @Inject(googleOauthConfig.KEY)
     private googleConfiguration: ConfigType<typeof googleOauthConfig>,
+    private readonly oauthService: OauthService,
   ) {
     super({
       clientID: googleConfiguration.clientID, // Исправлено
@@ -30,14 +32,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     done: VerifyCallback,
   ) {
     console.log({ profile });
-    const user = {
+    const data = {
       email: profile.emails[0].value,
-      firstName: profile.name.givenName,
+      name: profile.name.givenName,
       lastName: profile.name.familyName,
       avatarUrl: profile.photos[0].value,
       password: '',
     };
-    // done(null, user);
+    const user = await this.oauthService.validateGoogleUser(data);
     return user;
   }
 }
