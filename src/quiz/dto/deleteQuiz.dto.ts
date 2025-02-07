@@ -1,3 +1,5 @@
-export interface DeleteQuizRemoveDto {
+import { IsString } from 'class-validator';
+export class DeleteQuizRemoveDto {
+  @IsString()
   id: string;
 }

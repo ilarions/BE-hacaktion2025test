@@ -63,11 +63,11 @@ export class QuizService {
       throw new NotFoundException(e);
     }
   }
-  async remove_quiz(data, req) {
+  async remove_quiz(id, req) {
     try {
       await this.prisma.quiz.delete({
         where: {
-          id: data.id,
+          id: id,
           authorId: req.id,
         },
       });

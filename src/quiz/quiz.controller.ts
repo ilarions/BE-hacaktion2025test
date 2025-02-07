@@ -6,6 +6,7 @@ import {
   Post,
   Get,
   Query,
+  Delete,
   UseInterceptors,
   ValidationPipe,
   UploadedFile,
@@ -21,18 +22,39 @@ import {
   FileInterceptor,
   FilesInterceptor,
 } from '@nestjs/platform-express';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBody,
+  ApiQuery,
+  ApiConsumes,
+} from '@nestjs/swagger';
+
 const multer = Multer({
   storage: Multer.memoryStorage(),
   limits: {
     fileSize: 10 * 1024 * 1024,
   },
 });
-
+@ApiTags('quiz')
 @Controller('quiz')
 export class QuizController {
   constructor(private readonly quizService: QuizService) {}
 
   @Get('get')
+  @ApiOperation({ summary: 'Get products with pagination' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Limit per page',
+    type: Number,
+  })
   async getProducts(
     @Query('page') page: string,
     @Query('limit') limit: string,
@@ -43,6 +65,13 @@ export class QuizController {
     return this.quizService.get(pageNumber, limitNumber);
   }
   @Get('getone')
+  @ApiOperation({ summary: 'Get a single product by ID' })
+  @ApiQuery({
+    name: 'id',
+    required: true,
+    description: 'Product ID',
+    type: String,
+  })
   get_one(@Query('id') id: string) {
     return this.quizService.get_one(id);
   }
@@ -53,6 +82,13 @@ export class QuizController {
       storage: Multer.memoryStorage(),
     }),
   )
+  @ApiOperation({ summary: 'Create a new quiz' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: CreateQuizDto,
+    description:
+      'The data for the new quiz, including a file upload for the main image.',
+  })
   async create_quiz(
     @UploadedFiles() file: { mainImg?: Multer.File },
     @Body() data: CreateQuizDto,
@@ -62,9 +98,12 @@ export class QuizController {
     return await this.quizService.create_quiz(file, data, req);
   }
 
-  @Post('removequize')
+  @Delete('removequize')
+  @ApiBody({
+    type: DeleteQuizRemoveDto,
+  })
   @UsePipes(new ValidationPipe({ transform: true }))
-  async remove_quiz(@Body() data: DeleteQuizRemoveDto, @Req() req: any) {
-    return await this.quizService.remove_quiz(data, req);
+  async remove_quiz(@Query('id') id: string, @Req() req: any) {
+    return await this.quizService.remove_quiz(id, req);
   }
 }
