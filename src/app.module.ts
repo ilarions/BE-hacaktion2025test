@@ -6,14 +6,19 @@ import { ConfigModule } from '@nestjs/config';
 import { UserVerifyMiddleware } from './user-verify/user-verify.middleware';
 import { PrismaModule } from './prisma.module';
 import { OauthModule } from './oauth/oauth.module';
+import { QuestModule } from './quest/quest.module';
+import { QuizModule } from './quiz/quiz.module';
 
 @Module({
-  imports: [AuthModule, ConfigModule.forRoot(), PrismaModule, OauthModule],
+  imports: [
+    AuthModule,
+    ConfigModule.forRoot(),
+    PrismaModule,
+    OauthModule,
+    QuestModule,
+    QuizModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(UserVerifyMiddleware).forRoutes('user');
-  }
-}
+export class AppModule {}

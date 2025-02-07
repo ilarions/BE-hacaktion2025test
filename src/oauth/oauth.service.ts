@@ -23,10 +23,14 @@ export class OauthService {
           email: data.email,
           name: data.name,
           iconImg: data.avatarUrl,
-          isAlowed: true,
-          emailStatus: true,
           password: '',
+          isAlowed: false,
+          emailStatus: false,
           code: '',
+          yourQuiz: { connect: [] },
+          userRating: 0,
+          authorRating: 0,
+          questComplete: { connect: [] },
         },
       });
 

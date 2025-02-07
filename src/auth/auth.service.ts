@@ -41,6 +41,10 @@ export class AuthService {
           isAlowed: false,
           emailStatus: false,
           code: '',
+          yourQuiz: { connect: [] },
+          userRating: 0,
+          authorRating: 0,
+          questComplete: { connect: [] },
         },
       });
       console.log('aaa');
@@ -76,12 +80,14 @@ export class AuthService {
       if (!user) {
         throw new NotFoundException('This email is not registered');
       }
-
+      if (user.password == '') {
+        throw new NotFoundException('enter by google');
+      }
       const verifyPassword = bcrypt.compareSync(data.password, user.password);
+
       if (!verifyPassword) {
         throw new UnauthorizedException('Incorrect email or password');
       }
-
       const token = jwt.sign({ id: user.id }, process.env.SECRET, {
         expiresIn: '1h',
       });

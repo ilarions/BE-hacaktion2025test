@@ -18,19 +18,24 @@ model User {
   name     String
   password String
   iconImg  String
-  isAlowed Boolean
-  emailStatus Boolean
+  isAlowed Boolean @default(false)
+  emailStatus Boolean @default(false)
   code String
-  yourQuiz Quiz[]
-}
-
+  authorRating Int   @default(0)  
+  userRating Int @default(0) 
+  yourQuiz     Quiz[]  
+  questComplete QuestComplete[]
+ }
 model Quiz {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   title  String
+  description String
   img    String? 
-  userId String @db.ObjectId
-  user   User   @relation(fields: [userId], references: [id])
+  time String
+  authorId String @db.ObjectId
+  author   User   @relation(fields: [authorId], references: [id])
   quests Quest[]
+  questComplete QuestComplete[] 
 }
 
 model Quest {
@@ -38,10 +43,24 @@ model Quest {
   title      String
   type       String
   img        String?
-  variableA  String
-  variableB  String
-  variableC  String
-  variableD  String
   quizId     String @db.ObjectId
   quiz       Quiz   @relation(fields: [quizId], references: [id])
+  answers  Answer[]
+}
+model QuestComplete{
+  id         String @id @default(auto()) @map("_id") @db.ObjectId 
+  correctAnswer String 
+  timeStart String 
+  time String 
+  userId String @db.ObjectId                                       
+  user   User   @relation(fields: [userId], references: [id])      
+  quizId String @db.ObjectId                                        
+  quiz   Quiz   @relation(fields: [quizId], references: [id])       
+}
+model Answer {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  text     String  
+  isCorrect Boolean
+  questId  String  @db.ObjectId
+  quest    Quest   @relation(fields: [questId], references: [id])
 }
