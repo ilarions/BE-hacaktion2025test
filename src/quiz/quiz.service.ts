@@ -1,8 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 const S3 = require('aws-sdk/clients/s3');
 import * as Multer from 'multer';
 import { create_photo } from 'src/utils/create_photo';
+import { remove_photo } from 'src/utils/remove_photo';
 
 @Injectable()
 export class QuizService {
@@ -63,8 +68,51 @@ export class QuizService {
       throw new NotFoundException(e);
     }
   }
+  async change_quiz(file: Multer.File, data, req) {
+    try {
+      const id = data.id;
+      delete data.id;
+      const quiz = await this.prisma.quiz.update({
+        where: {
+          id: id,
+          authorId: req.id,
+        },
+        data: data,
+      });
+
+      if (file?.mainImg && file.mainImg.length > 0) {
+        if (quiz.img && quiz.img !== '') {
+          await remove_photo(quiz.img);
+        }
+
+        const img = await create_photo(file.mainImg[0]);
+
+        await this.prisma.quiz.update({
+          where: {
+            id: id,
+            authorId: req.id,
+          },
+          data: {
+            ...data,
+            img,
+          },
+        });
+      }
+    } catch (e) {
+      throw new NotFoundException(e);
+    }
+  }
   async remove_quiz(id, req) {
     try {
+      const quiz = await this.prisma.quiz.findUnique({
+        where: { id: id },
+      });
+      if (!quiz) {
+        throw new UnauthorizedException('Quiz not found');
+      }
+      if (quiz.img && quiz.img != '') {
+        await remove_photo(quiz.img);
+      }
       await this.prisma.quiz.delete({
         where: {
           id: id,

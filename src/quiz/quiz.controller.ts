@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
 import { CreateQuizDto } from './dto/createQuiz.dto';
+import { ChangeQuizDto } from './dto/changeQuiz.dto';
 import { DeleteQuizRemoveDto } from './dto/deleteQuiz.dto';
 import * as Multer from 'multer';
 import {
@@ -96,6 +97,28 @@ export class QuizController {
   ) {
     const mainImg = file?.mainImg ? file : null;
     return await this.quizService.create_quiz(file, data, req);
+  }
+
+  @Post('changequiz')
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'mainImg', maxCount: 1 }], {
+      storage: Multer.memoryStorage(),
+    }),
+  )
+  @ApiOperation({ summary: 'Create a new quiz' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: ChangeQuizDto,
+    description:
+      'The data for the new quiz, including a file upload for the main image.',
+  })
+  async change_quiz(
+    @UploadedFiles() file: { mainImg?: Multer.File },
+    @Body() data: ChangeQuizDto,
+    @Req() req: any,
+  ) {
+    const mainImg = file?.mainImg ? file : null;
+    return await this.quizService.change_quiz(file, data, req);
   }
 
   @Delete('removequize')
