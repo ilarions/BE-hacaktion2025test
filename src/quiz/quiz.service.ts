@@ -55,6 +55,7 @@ export class QuizService {
         data: {
           title: data.title,
           description: data.description,
+          rating: 0,
           img: img,
           time: time,
           quests: { connect: [] },

@@ -32,6 +32,7 @@ model Quiz {
   description String
   img    String? 
   time String
+  rating Int
   authorId String @db.ObjectId
   author   User   @relation(fields: [authorId], references: [id])
   quests Quest[]

@@ -8,6 +8,7 @@ import { PrismaModule } from './prisma.module';
 import { OauthModule } from './oauth/oauth.module';
 import { QuestModule } from './quest/quest.module';
 import { QuizModule } from './quiz/quiz.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { QuizModule } from './quiz/quiz.module';
     OauthModule,
     QuestModule,
     QuizModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
