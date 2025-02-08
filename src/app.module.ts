@@ -9,6 +9,8 @@ import { OauthModule } from './oauth/oauth.module';
 import { QuestModule } from './quest/quest.module';
 import { QuizModule } from './quiz/quiz.module';
 import { UserModule } from './user/user.module';
+import { InGameModule } from './in_game/in_game.module';
+import { AnswerModule } from './answer/answer.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { UserModule } from './user/user.module';
     QuestModule,
     QuizModule,
     UserModule,
+    InGameModule,
+    AnswerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
