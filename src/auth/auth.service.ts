@@ -93,7 +93,7 @@ export class AuthService {
       });
       res.cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_DEV === 'production',
         sameSite: 'strict',
       });
       return token;
