@@ -25,4 +25,18 @@ export class UserService {
       throw new NotFoundException(e);
     }
   }
+  async change_name(data,req){
+  try{
+    const user=await this.prisma.user.update({
+      where:{
+        id:req.id
+      },
+      data:{
+        name:data.name
+      }
+     })
+     return user
+  }catch(e){
+      throw new NotFoundException(e);
+  }}
 }

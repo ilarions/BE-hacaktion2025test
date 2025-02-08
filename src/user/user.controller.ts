@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import * as Multer from 'multer';
 import {
@@ -8,6 +8,7 @@ import {
   ApiQuery,
   ApiConsumes,
 } from '@nestjs/swagger';
+import { UserChangeDto } from './dto/userChangeName.dto';
 
 const multer = Multer({
   storage: Multer.memoryStorage(),
@@ -23,5 +24,9 @@ export class UserController {
   @Get('get')
   async get_user(@Req() req: any) {
     return this.userService.get_user(req);
+  }
+  @Post("changename")
+  async change_name(@Body() data:UserChangeDto ,@Req() req: any){
+    return this.userService.change_name(data,req)
   }
 }
