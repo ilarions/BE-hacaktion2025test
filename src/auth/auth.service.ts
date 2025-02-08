@@ -16,7 +16,7 @@ import { Emailsend } from 'src/utils/sendler_email';
 const emailSend = new Emailsend();
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
   async register(data: IRegistretion, res: Response) {
     try {
       const user = await this.prisma.user.findFirst({
@@ -60,7 +60,7 @@ export class AuthService {
       //  });
       await res.cookie('temporarytoken', temporaryToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_DEV === 'production',
         sameSite: 'strict',
       });
       console.log('ept');
@@ -184,7 +184,7 @@ export class AuthService {
       });
       res.cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_DEV === 'production',
         sameSite: 'strict',
       });
       return '';

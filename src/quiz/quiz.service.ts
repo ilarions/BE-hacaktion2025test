@@ -30,7 +30,7 @@ export class QuizService {
     };
   }
 
-  async get_one(id) {
+  async get_one(id,req) {
     try {
       const quiz = this.prisma.quiz.findFirst({
         where: {
@@ -38,7 +38,12 @@ export class QuizService {
         },
         include: { quests: true, questComplete: true },
       });
-      return quiz;
+       let author=false
+      if(quiz.author==req.id){
+          author=true
+      }
+      return {quiz:quiz,
+        author:author};
     } catch (e) {
       throw new NotFoundException(e);
     }

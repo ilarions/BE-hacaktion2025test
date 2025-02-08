@@ -1,6 +1,5 @@
 import {
   Controller,
-  Req,
   Res,
   Body,
   Post,
@@ -8,6 +7,7 @@ import {
   Query,
   Delete,
   UseInterceptors,
+  Req,
   ValidationPipe,
   UploadedFile,
   UploadedFiles,
@@ -73,8 +73,8 @@ export class QuizController {
     description: 'Product ID',
     type: String,
   })
-  get_one(@Query('id') id: string) {
-    return this.quizService.get_one(id);
+  get_one(@Query('id') id: string,@Req() req:any) {
+    return this.quizService.get_one(id,req);
   }
 
   @Post('createquiz')

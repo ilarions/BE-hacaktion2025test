@@ -14,7 +14,6 @@ export class QuizModule {
       .apply(UserVerifyMiddleware)
       .exclude(
         { path: 'quiz/get', method: RequestMethod.GET },
-        { path: 'quiz/getone', method: RequestMethod.GET },
       )
       .forRoutes(QuizController);
   }
