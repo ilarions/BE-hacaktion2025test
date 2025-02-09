@@ -73,8 +73,8 @@ export class QuizController {
     description: 'Product ID',
     type: String,
   })
-  get_one(@Query('id') id: string,@Req() req:any) {
-    return this.quizService.get_one(id,req);
+  get_one(@Query('id') id: string) {
+    return this.quizService.get_one(id);
   }
 
   @Post('createquiz')
@@ -90,6 +90,7 @@ export class QuizController {
     description:
       'The data for the new quiz, including a file upload for the main image.',
   })
+  @UsePipes(new ValidationPipe({ transform: true })) 
   async create_quiz(
     @UploadedFiles() file: { mainImg?: Multer.File },
     @Body() data: CreateQuizDto,

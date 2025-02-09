@@ -24,6 +24,7 @@ model User {
   authorRating Int   @default(0)  
   userRating Int @default(0) 
   yourQuiz     Quiz[]  
+  userInRoom UserInRoom[]
   questComplete QuestComplete[]
  }
 model Quiz {
@@ -31,7 +32,7 @@ model Quiz {
   title  String
   description String
   img    String? 
-  time String
+  time Int
   rating Int
   authorId String @db.ObjectId
   author   User   @relation(fields: [authorId], references: [id])
@@ -65,3 +66,23 @@ model Answer {
   questId  String  @db.ObjectId
   quest    Quest   @relation(fields: [questId], references: [id])
 }
+
+model Room{
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId 
+  userInRoom UserInRoom[]
+  
+  
+  }
+model UserInRoom{
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId  
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+  roomId String @db.ObjectId                                               
+  room    Room   @relation(fields: [roomId], references: [id])  
+  correctAnswer Int
+  time Int
+}
+model QuizInRoom{
+ id       String  @id @default(auto()) @map("_id") @db.ObjectId   
+
+  }

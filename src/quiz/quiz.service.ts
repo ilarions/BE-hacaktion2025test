@@ -30,20 +30,15 @@ export class QuizService {
     };
   }
 
-  async get_one(id,req) {
+  async get_one(id) {
     try {
-      const quiz = this.prisma.quiz.findFirst({
+      const quiz =await this.prisma.quiz.findFirst({
         where: {
           id: id,
         },
         include: { quests: true, questComplete: true },
       });
-       let author=false
-      if(quiz.author==req.id){
-          author=true
-      }
-      return {quiz:quiz,
-        author:author};
+      return quiz
     } catch (e) {
       throw new NotFoundException(e);
     }
@@ -55,14 +50,13 @@ export class QuizService {
       if (file?.mainImg && file.mainImg.length > 0) {
         img = await create_photo(file.mainImg[0]);
       }
-      const time = new Date().toString();
       const quiz = await this.prisma.quiz.create({
         data: {
           title: data.title,
           description: data.description,
           rating: 0,
           img: img,
-          time: time,
+          time: data.time,
           quests: { connect: [] },
           questComplete: { connect: [] },
           authorId: req.id,

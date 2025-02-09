@@ -11,6 +11,7 @@ import { QuizModule } from './quiz/quiz.module';
 import { UserModule } from './user/user.module';
 import { InGameModule } from './in_game/in_game.module';
 import { AnswerModule } from './answer/answer.module';
+import { RoomQuestModule } from './room_quest/room_quest.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AnswerModule } from './answer/answer.module';
     UserModule,
     InGameModule,
     AnswerModule,
+    RoomQuestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

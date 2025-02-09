@@ -4,7 +4,7 @@ import { CreateInGameDto } from './dto/create-in_game.dto';
 import { UpdateInGameDto } from './dto/update-in_game.dto';
 
 @WebSocketGateway({
-  namespace: '/game',  // Указываем namespace для подключения
+  namespace: '/game',  
 })
 export class InGameGateway {
   constructor(private readonly inGameService: InGameService) { }
