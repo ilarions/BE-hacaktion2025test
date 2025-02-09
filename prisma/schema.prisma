@@ -3,7 +3,6 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -37,6 +36,8 @@ model Quiz {
   authorId String @db.ObjectId
   author   User   @relation(fields: [authorId], references: [id])
   quests Quest[]
+  quizInRoom Room[]
+
   questComplete QuestComplete[] 
 }
 
@@ -49,7 +50,7 @@ model Quest {
   quiz       Quiz   @relation(fields: [quizId], references: [id])
   answers  Answer[]
   quizInRoomId String[]   @db.ObjectId
-  quizInRoom QuizInRoom[] @relation(fields: [quizInRoomId], references: [id])
+  quizInRoom Room[] @relation(fields: [quizInRoomId], references: [id])
 
 }
 model QuestComplete{
@@ -73,8 +74,10 @@ model Answer {
 model Room{
   id       String  @id @default(auto()) @map("_id") @db.ObjectId 
   userInRoom UserInRoom[]
-  quizInRoom QuizInRoom[]
-
+  quizInRoomId String  @db.ObjectId                                                
+  quizInRoom  Quiz    @relation(fields: [quizInRoomId], references: [id])              
+  questId String[]   @db.ObjectId
+  quest    Quest[]  @relation(fields: [questId], references: [id])  
   }
 model UserInRoom{
   id       String  @id @default(auto()) @map("_id") @db.ObjectId  
@@ -84,12 +87,5 @@ model UserInRoom{
   room    Room   @relation(fields: [roomId], references: [id])  
   correctAnswer Int
   time Int
-}
-model QuizInRoom {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId   
-  quizInRoomId String  @db.ObjectId                                                
-  quizInRoom   Room    @relation(fields: [quizInRoomId], references: [id])              
-  questId String[]   @db.ObjectId
-  quest    Quest[]  @relation(fields: [questId], references: [id])  
 }
 

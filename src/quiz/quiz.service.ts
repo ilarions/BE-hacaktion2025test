@@ -11,28 +11,33 @@ import { remove_photo } from 'src/utils/remove_photo';
 
 @Injectable()
 export class QuizService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
   async get(page, limit) {
-    const skip = (page - 1) * limit;
-    const [quiz, total] = await Promise.all([
-      this.prisma.quiz.findMany({
-        skip,
-        take: limit,
-      }),
-      this.prisma.quiz.count(),
-    ]);
-    return {
-      data: quiz,
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    };
+    try {
+      const skip = (page - 1) * limit;
+      const [quiz, total] = await Promise.all([
+        this.prisma.quiz.findMany({
+          skip,
+          take: limit,
+        }),
+        this.prisma.quiz.count(),
+      ]);
+      return {
+        data: quiz,
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      };
+    } catch (e) {
+      throw new NotFoundException(e);
+    }
+
   }
 
   async get_one(id) {
     try {
-      const quiz =await this.prisma.quiz.findFirst({
+      const quiz = await this.prisma.quiz.findFirst({
         where: {
           id: id,
         },
