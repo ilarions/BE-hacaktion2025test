@@ -31,7 +31,7 @@ const multer = Multer({
 @ApiTags('quest')
 @Controller('quest')
 export class QuestController {
-  constructor(private readonly questService: QuestService) {}
+  constructor(private readonly questService: QuestService) { }
 
   @Post('createquest')
   @UseInterceptors(
@@ -52,6 +52,7 @@ export class QuestController {
     @Req() req: any,
   ) {
     const mainImg = file?.mainImg ? file : null;
+    console.log(mainImg)
     return await this.questService.create_quest(file, data, req);
   }
 }

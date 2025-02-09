@@ -60,7 +60,7 @@ export class AuthService {
       //  });
       await res.cookie('temporarytoken', temporaryToken, {
         httpOnly: true,
-        secure: process.env.NODE_DEV === 'production',
+        secure: false,
         sameSite: 'strict',
       });
       console.log('ept');
@@ -184,7 +184,7 @@ export class AuthService {
       });
       res.cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_DEV === 'production',
+        secure:false,
         sameSite: 'strict',
       });
       return '';

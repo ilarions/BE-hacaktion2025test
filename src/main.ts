@@ -6,10 +6,11 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
-  app.enableCors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  });
+ 
+app.enableCors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+});
   app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .setTitle('Cats example')

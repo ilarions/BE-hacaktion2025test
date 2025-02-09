@@ -48,6 +48,9 @@ model Quest {
   quizId     String @db.ObjectId
   quiz       Quiz   @relation(fields: [quizId], references: [id])
   answers  Answer[]
+  quizInRoomId String[]   @db.ObjectId
+  quizInRoom QuizInRoom[] @relation(fields: [quizInRoomId], references: [id])
+
 }
 model QuestComplete{
   id         String @id @default(auto()) @map("_id") @db.ObjectId 
@@ -70,8 +73,8 @@ model Answer {
 model Room{
   id       String  @id @default(auto()) @map("_id") @db.ObjectId 
   userInRoom UserInRoom[]
-  
-  
+  quizInRoom QuizInRoom[]
+
   }
 model UserInRoom{
   id       String  @id @default(auto()) @map("_id") @db.ObjectId  
@@ -82,7 +85,11 @@ model UserInRoom{
   correctAnswer Int
   time Int
 }
-model QuizInRoom{
- id       String  @id @default(auto()) @map("_id") @db.ObjectId   
+model QuizInRoom {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId   
+  quizInRoomId String  @db.ObjectId                                                
+  quizInRoom   Room    @relation(fields: [quizInRoomId], references: [id])              
+  questId String[]   @db.ObjectId
+  quest    Quest[]  @relation(fields: [questId], references: [id])  
+}
 
-  }

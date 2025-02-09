@@ -29,8 +29,7 @@ export class CreateQuestDto {
   })
   mainImg?: File;
 
-  @ValidateNested({ each: true })
-  @Type(() => AnswerDto)
+
   @ArrayMinSize(2)
   @ApiProperty({
     type: [AnswerDto],

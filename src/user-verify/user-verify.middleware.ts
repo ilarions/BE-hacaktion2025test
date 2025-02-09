@@ -12,7 +12,9 @@ export class UserVerifyMiddleware implements NestMiddleware {
   constructor(private prisma: PrismaService) {}
   async use(req: any, res: Response, next: NextFunction) {
     try {
+      console.log(req.cookies)
       const token = req.cookies.token;
+      console.log(token)
       if (!token) {
         throw new UnauthorizedException('Token is required');
       }
