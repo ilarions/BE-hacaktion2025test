@@ -21,7 +21,6 @@ export class RoomQuestService {
         data: {
           quizInRoomId: data.id_quiz,
           questId: quests.map((quest) => quest.id),
-
           userInRoom: {
             create: [
               {
@@ -31,8 +30,6 @@ export class RoomQuestService {
               },
             ],
           },
-
-
         },
       });
       return newRoom

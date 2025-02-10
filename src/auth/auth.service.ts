@@ -89,7 +89,7 @@ export class AuthService {
         throw new UnauthorizedException('Incorrect email or password');
       }
       const token = jwt.sign({ id: user.id }, process.env.SECRET, {
-        expiresIn: '1h',
+        expiresIn: '24h',
       });
       res.cookie('token', token, {
         httpOnly: true,
@@ -180,11 +180,11 @@ export class AuthService {
         },
       });
       const token = jwt.sign({ id: user.id }, process.env.SECRET, {
-        expiresIn: '1h',
+        expiresIn: '24h',
       });
       res.cookie('token', token, {
         httpOnly: true,
-        secure:false,
+        secure: false,
         sameSite: 'strict',
       });
       return '';

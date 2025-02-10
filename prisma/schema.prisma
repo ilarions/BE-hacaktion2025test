@@ -78,6 +78,7 @@ model Room{
   quizInRoom  Quiz    @relation(fields: [quizInRoomId], references: [id])              
   questId String[]   @db.ObjectId
   quest    Quest[]  @relation(fields: [questId], references: [id])  
+  currentQuest String? @default("")
   }
 model UserInRoom{
   id       String  @id @default(auto()) @map("_id") @db.ObjectId  
@@ -87,5 +88,7 @@ model UserInRoom{
   room    Room   @relation(fields: [roomId], references: [id])  
   correctAnswer Int
   time Int
+  socketId String?
+  state Boolean @default(false) 
 }
 
