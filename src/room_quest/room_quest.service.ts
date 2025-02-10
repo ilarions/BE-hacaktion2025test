@@ -21,6 +21,7 @@ export class RoomQuestService {
         data: {
           quizInRoomId: data.id_quiz,
           questId: quests.map((quest) => quest.id),
+          currentQuest: "",
           userInRoom: {
             create: [
               {
@@ -32,7 +33,7 @@ export class RoomQuestService {
           },
         },
       });
-      return newRoom
+      return { newRoom, token: req.cookies.token }
     } catch (e) {
       console.log(e)
       throw new NotFoundException(e);
