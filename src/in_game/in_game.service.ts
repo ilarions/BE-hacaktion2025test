@@ -19,11 +19,33 @@ export class InGameService {
     this.next_step(timers[data.id])
 
   }
+  async end_game(room: any) {
+    const new_room = await this.prisma.room.findFirst({
+      where: {
+        id: room.room_id
+      },
+      include: {
+        userInRoom: true,
+      },
+    })
+
+    room.user.map((elem) => {
+      const res = {
+        new_room
+      }
+      console.log(elem)
+      console.log(res)
+      return elem.socket.emit('end_quiz', res)
+
+    })
+
+  }
   async next_step(room) {
     const new_room_quest = await this.change_quest(room.room_id);
     if (!new_room_quest) {
       clearInterval(room.interval);
-      return
+      const emt = await this.end_game(room)
+      return emt;
     }
 
     const user_in_room = await this.get_user_in_room(room.room_id)
@@ -72,7 +94,6 @@ export class InGameService {
     }, 1000)
 
   }
-
 
 
   async send_quest(data: CreateInGameDto, timers: any, client: Socket, user_id: string) {

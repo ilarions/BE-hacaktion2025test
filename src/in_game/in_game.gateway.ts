@@ -25,6 +25,7 @@ export class InGameGateway {
 
     const id = await this.inGameService.get_user(data)
     const res = await this.inGameService.send_answer(data, this.timers, client, id);
+    return;
   }
 
 }
