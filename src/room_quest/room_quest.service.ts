@@ -7,21 +7,21 @@ export class RoomQuestService {
   constructor(private prisma: PrismaService) { }
   async create_room(data: CreateRoomDto, req) {
     try {
-      const quests = await this.prisma.quest.findMany({
-        where: {
-          quizId: data.id_quiz,
-        },
-        include: { answers: true }
+      const quiz = await this.prisma.quiz.findUnique({
+        where: { id: data.id_quiz },
+        include: { quests: { include: { answers: true } } }
       });
-      console.log(quests)
-      if (!quests || quests.length == 0) {
-        throw new NotFoundException("cannot find quiz or this quiz doesnt have quest");
+
+      if (!quiz || !quiz.quests || quiz.quests.length === 0) {
+        throw new NotFoundException("Cannot find quiz or this quiz doesn't have questions.");
       }
+
       const newRoom = await this.prisma.room.create({
         data: {
           quizInRoomId: data.id_quiz,
-          questId: quests.map((quest) => quest.id),
+          questId: quiz.quests.map((quest) => quest.id),
           currentQuest: "",
+          time: quiz.time,
           userInRoom: {
             create: [
               {
@@ -31,8 +31,10 @@ export class RoomQuestService {
               },
             ],
           },
+
         },
       });
+
       return { newRoom, token: req.cookies.token }
     } catch (e) {
       console.log(e)

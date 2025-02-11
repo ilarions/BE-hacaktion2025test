@@ -1,7 +1,7 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, ConnectedSocket } from '@nestjs/websockets';
 import { InGameService } from './in_game.service';
 import { CreateInGameDto } from './dto/create-in_game.dto';
-import { UpdateInGameDto } from './dto/update-in_game.dto';
+import { SendAnswerDto } from './dto/sendAnswer.dto';
 import { Socket } from 'socket.io';
 
 @WebSocketGateway({
@@ -16,8 +16,15 @@ export class InGameGateway {
 
     const id = await this.inGameService.get_user(data)
     const res = await this.inGameService.send_quest(data, this.timers, client, id);
-    console.log(res)
+    console.log("fuck")
     client.emit('start_question', res);
+  }
+  @SubscribeMessage("send_answer")
+  async send_answer(@MessageBody() data: SendAnswerDto, @ConnectedSocket() client: Socket) {
+
+
+    const id = await this.inGameService.get_user(data)
+    const res = await this.inGameService.send_answer(data, this.timers, client, id);
   }
 
 }
