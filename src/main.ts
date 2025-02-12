@@ -8,7 +8,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: 'http://localhost:3000, fe-hackatio2025-test.vercel.app/',
+    origin: ['http://localhost:3000', 'https://fe-hackatio2025-test.vercel.app'],
     credentials: true,
   });
   app.useGlobalPipes(new ValidationPipe());

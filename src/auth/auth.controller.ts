@@ -65,7 +65,7 @@ export class AuthController {
     return this.authService.login(data, res);
   }
   @Get("get_token")
-  get_token(@Body() data: any, @Res({ passthrough: true }) res: Response) {
-    return this.authService.get_token(data, res);
+  get_token(@Query("token") token: string, @Res({ passthrough: true }) res: Response) {
+    return this.authService.get_token(token, res);
   }
 }
