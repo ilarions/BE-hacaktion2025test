@@ -13,6 +13,7 @@ export class InGameGateway {
 
   @SubscribeMessage("start_question")
   async create(@MessageBody() data: CreateInGameDto, @ConnectedSocket() client: Socket) {
+    console.log("fuck")
 
     const id = await this.inGameService.get_user(data)
     const res = await this.inGameService.send_quest(data, this.timers, client, id);

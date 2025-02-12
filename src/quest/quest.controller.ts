@@ -5,6 +5,8 @@ import {
   Controller,
   Req,
   Body,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { QuestService } from './quest.service';
 import { CreateQuestDto } from './dto/createQuest.dto';
@@ -46,6 +48,7 @@ export class QuestController {
     description:
       'The data for the new quiz, including a file upload for the main image.',
   })
+  @UsePipes(new ValidationPipe({ transform: true }))
   async create_quiz(
     @UploadedFiles() file: { mainImg?: Multer.File },
     @Body() data: CreateQuestDto,
