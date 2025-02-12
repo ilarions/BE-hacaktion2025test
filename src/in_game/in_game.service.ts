@@ -14,6 +14,10 @@ export class InGameService {
     const room = await this.find_room(data.id)
     const current_quest = room.quest.find((elem) => elem.id == room.currentQuest)
     const user_answer = current_quest?.answers.find((elem) => elem.id == data.answer)
+    if (user_answer) {
+      this.confirm_answer(user_answer.isCorrect, timers[data.id].timer, user_id, data.id)
+    }
+
 
     clearInterval(timers[data.id].interval)
     this.next_step(timers[data.id])
@@ -28,23 +32,51 @@ export class InGameService {
         userInRoom: true,
       },
     })
+    await this.quest_complete(new_room)
 
     room.user.map((elem) => {
       const res = {
         new_room
       }
-      console.log(elem)
-      console.log(res)
       return elem.socket.emit('end_quiz', res)
-
     })
+
+  }
+  async quest_complete(room: any) {
+    console.log(room)
+    const data = await Promise.allSettled(
+      room.userInRoom.map(elem =>
+        this.prisma.questComplete.create({
+          data: {
+            correctAnswer: elem.correctAnswer,
+            time: elem.time,
+            timeStart: new Date().toISOString(),
+            userId: elem.userId,
+            quizId: room.quizInRoomId
+          }
+        })
+      )
+    );
+    console.log(data)
 
   }
   async next_step(room) {
     const new_room_quest = await this.change_quest(room.room_id);
     if (!new_room_quest) {
       clearInterval(room.interval);
+
+
       const emt = await this.end_game(room)
+      await this.prisma.$transaction([
+        this.prisma.userInRoom.deleteMany({
+          where: { roomId: room.room_id }
+        }),
+        this.prisma.room.delete({
+          where: { id: room.room_id }
+        })
+      ]);
+      room = null
+
       return emt;
     }
 
@@ -171,17 +203,21 @@ export class InGameService {
     return room;
 
   }
-  async confirm_answer(state_answer: boolean, time: number, user_id: string): Promise<void> {
+  async confirm_answer(state_answer: boolean, time: number, user_id: string, room_id: string): Promise<void> {
     try {
+      const userInRoom = await this.prisma.userInRoom.findFirst({
+        where: { userId: user_id, roomId: room_id },
+      })
+      if (!userInRoom) {
+        return
+      }
+      let correct = state_answer ? 1 : 0
+      const correctAnswer = userInRoom.correctAnswer + correct
       await this.prisma.userInRoom.update({
-        where: { userId: user_id },
+        where: { userId: user_id, roomId: room_id },
         data: {
-          correctAnswer: {
-            increment: state_answer ? 1 : 0
-          },
-          time: {
-            increment: time
-          },
+          correctAnswer: correctAnswer,
+          time: userInRoom.time + Math.abs(time),
           state: true
         }
       });
@@ -276,5 +312,4 @@ export class InGameService {
     }
 
   }
-
 }

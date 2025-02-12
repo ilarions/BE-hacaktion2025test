@@ -40,7 +40,7 @@ const multer = Multer({
 @ApiTags('quiz')
 @Controller('quiz')
 export class QuizController {
-  constructor(private readonly quizService: QuizService) {}
+  constructor(private readonly quizService: QuizService) { }
 
   @Get('get')
   @ApiOperation({ summary: 'Get products with pagination' })
@@ -90,7 +90,7 @@ export class QuizController {
     description:
       'The data for the new quiz, including a file upload for the main image.',
   })
-  @UsePipes(new ValidationPipe({ transform: true })) 
+  @UsePipes(new ValidationPipe({ transform: true }))
   async create_quiz(
     @UploadedFiles() file: { mainImg?: Multer.File },
     @Body() data: CreateQuizDto,
@@ -113,6 +113,8 @@ export class QuizController {
     description:
       'The data for the new quiz, including a file upload for the main image.',
   })
+  @UsePipes(new ValidationPipe({ transform: true }))
+
   async change_quiz(
     @UploadedFiles() file: { mainImg?: Multer.File },
     @Body() data: ChangeQuizDto,

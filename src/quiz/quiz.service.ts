@@ -41,7 +41,14 @@ export class QuizService {
         where: {
           id: id,
         },
-        include: { quests: true, questComplete: true },
+        include: {
+          quests: {
+            include: {
+              answers: true,
+            }
+          }
+          , questComplete: true
+        },
       });
       return quiz
     } catch (e) {
@@ -83,16 +90,24 @@ export class QuizService {
           authorId: req.id,
         },
         data: data,
+        include: {
+          quests: {
+            include: {
+              answers: true,
+            }
+
+          }
+        }
       });
+      let update_quiz = quiz
 
       if (file?.mainImg && file.mainImg.length > 0) {
         if (quiz.img && quiz.img !== '') {
           await remove_photo(quiz.img);
         }
-
         const img = await create_photo(file.mainImg[0]);
 
-        await this.prisma.quiz.update({
+        update_quiz = await this.prisma.quiz.update({
           where: {
             id: id,
             authorId: req.id,
@@ -101,9 +116,21 @@ export class QuizService {
             ...data,
             img,
           },
+          include: {
+            quests: {
+              include: {
+                answers: true,
+              }
+
+            }
+          }
         });
+
       }
+      return { update_quiz };
+
     } catch (e) {
+      console.log(e)
       throw new NotFoundException(e);
     }
   }

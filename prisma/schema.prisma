@@ -55,9 +55,9 @@ model Quest {
 }
 model QuestComplete{
   id         String @id @default(auto()) @map("_id") @db.ObjectId 
-  correctAnswer String 
+  correctAnswer Int 
   timeStart String 
-  time String 
+  time Int 
   userId String @db.ObjectId                                       
   user   User   @relation(fields: [userId], references: [id])      
   quizId String @db.ObjectId                                        
