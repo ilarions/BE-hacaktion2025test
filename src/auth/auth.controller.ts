@@ -24,7 +24,7 @@ import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('register')
   @ApiOperation({ summary: 'register' })
@@ -63,5 +63,9 @@ export class AuthController {
   @UsePipes(new ValidationPipe({ transform: true }))
   login(@Body() data: ILogin, @Res({ passthrough: true }) res: Response) {
     return this.authService.login(data, res);
+  }
+  @Get("get_token")
+  get_token(@Body() data: any, @Res({ passthrough: true }) res: Response) {
+    return this.authService.get_token(data, res);
   }
 }

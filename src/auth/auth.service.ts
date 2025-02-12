@@ -195,4 +195,17 @@ export class AuthService {
       throw new InternalServerErrorException('Internal Server Error');
     }
   }
+  async get_token(token: any, res: Response) {
+    try {
+      res.cookie('token', token.token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict',
+      });
+      return;
+    } catch (e) {
+      throw new InternalServerErrorException('Internal Server Error');
+    }
+
+  }
 }
