@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateInGameDto } from './dto/create-in_game.dto';
 import { UpdateInGameDto } from './dto/update-in_game.dto';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { Socket } from 'socket.io';
 import * as jwt from 'jsonwebtoken';
 import { decode } from 'node:querystring';

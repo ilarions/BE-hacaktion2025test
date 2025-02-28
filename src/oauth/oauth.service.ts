@@ -3,12 +3,12 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { generateToken } from 'src/utils/generateToken';
 
 @Injectable()
 export class OauthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async validateGoogleUser(data) {
     try {

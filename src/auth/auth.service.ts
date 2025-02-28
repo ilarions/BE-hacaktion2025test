@@ -8,7 +8,7 @@ import * as jwt from 'jsonwebtoken';
 import { ILogin } from './dto/login.dto';
 import { IRegistretion } from './dto/register.dto';
 import { IEndRegister } from './dto/end_register.dto';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { generateToken } from 'src/utils/generateToken';

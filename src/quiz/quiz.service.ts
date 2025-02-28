@@ -3,7 +3,7 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 const S3 = require('aws-sdk/clients/s3');
 import * as Multer from 'multer';
 import { create_photo } from 'src/utils/create_photo';
