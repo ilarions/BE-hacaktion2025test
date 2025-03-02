@@ -4,21 +4,22 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { ChangeNameDto } from './dto/userChangeName.dto';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) { }
-
+  async findOne(email: string): Promise<any | undefined> {
+    return await this.prisma.user.findFirst({ where: { email: email } })
+  }
   async get_user(req) {
     try {
-      console.log("a'")
       const user = this.prisma.user.findFirst({
         where: {
           id: req.id,
         },
         include: { yourQuiz: true, questComplete: true },
       });
-      console.log("a")
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
@@ -28,7 +29,7 @@ export class UserService {
       throw new NotFoundException(e);
     }
   }
-  async change_name(data, req) {
+  async change_name(data: ChangeNameDto, req) {
     try {
       const user = await this.prisma.user.update({
         where: {

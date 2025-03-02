@@ -6,12 +6,13 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as Multer from 'multer';
 import { create_photo } from 'src/utils/create_photo';
+import { Request } from 'express';
+
 @Injectable()
 export class QuestService {
   constructor(private prisma: PrismaService) { }
-  async create_quest(file: Multer.File, data, req) {
+  async create_quest(file: Multer.File, data, req: Request) {
     try {
-      console.log("aa")
       const quiz = this.prisma.quiz.findFirst({
         where: {
           id: data.id,

@@ -1,24 +1,30 @@
-import { PrismaService } from "../prisma.service";
+import { PrismaService } from "../prisma/prisma.service";
 import { UserService } from "./user.service";
 import { Test, TestingModule } from '@nestjs/testing';
 
 
 const oneUser = {
+  id: "11",
   name: "arr",
   pasasword: "aa"
 }
-
+const updateUser = {
+  id: "11",
+  name: "ary",
+  pasasword: "aa"
+}
 const db = {
   user: {
-
     findFirst: jest.fn().mockResolvedValue(oneUser),
+    update: jest.fn().mockResolvedValue(updateUser),
   },
 };
 
 
 
-describe('CatService', () => {
+describe('UserService', () => {
   let service: UserService;
+
   let prisma: PrismaService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -41,5 +47,9 @@ describe('CatService', () => {
       expect(service.get_user('a uuid')).resolves.toEqual(oneUser);
     });
   });
-
+  describe("updateName", () => {
+    it("should be return update user", () => {
+      expect(service.change_name(oneUser, 11)).resolves.toEqual(updateUser);
+    })
+  })
 })

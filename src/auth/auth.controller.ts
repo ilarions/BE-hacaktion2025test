@@ -20,6 +20,9 @@ import {
 import { Response } from 'express';
 import { JwtAuthGuard } from './guards/auth.guard';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { LocalStrategy } from './local.strategy';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -59,9 +62,11 @@ export class AuthController {
     return this.authService.end_register(req, data, res);
   }
 
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   @UsePipes(new ValidationPipe({ transform: true }))
   login(@Body() data: ILogin, @Res({ passthrough: true }) res: Response) {
+    console.log("Inside login controller", data);
     return this.authService.login(data, res);
   }
   @Get("get_token")

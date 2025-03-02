@@ -3,9 +3,12 @@ import { QuizService } from './quiz.service';
 import { QuizController } from './quiz.controller';
 import { UserVerifyMiddleware } from 'src/user-verify/user-verify.middleware';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuthModule } from '../auth/auth.module';
+
 
 @Module({
   controllers: [QuizController],
+  imports: [AuthModule],
   providers: [QuizService, PrismaService],
 })
 export class QuizModule {

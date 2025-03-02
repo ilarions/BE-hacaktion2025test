@@ -11,17 +11,15 @@ import {
 import { QuestService } from './quest.service';
 import { CreateQuestDto } from './dto/createQuest.dto';
 import * as Multer from 'multer';
+import { Request } from 'express';
 import {
   ApiTags,
   ApiOperation,
   ApiBody,
-  ApiQuery,
   ApiConsumes,
 } from '@nestjs/swagger';
 import {
   FileFieldsInterceptor,
-  FileInterceptor,
-  FilesInterceptor,
 } from '@nestjs/platform-express';
 
 const multer = Multer({
@@ -52,7 +50,7 @@ export class QuestController {
   async create_quiz(
     @UploadedFiles() file: { mainImg?: Multer.File },
     @Body() data: CreateQuestDto,
-    @Req() req: any,
+    @Req() req: Request,
   ) {
     const mainImg = file?.mainImg ? file : null;
     console.log(mainImg)

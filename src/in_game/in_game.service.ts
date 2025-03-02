@@ -6,10 +6,14 @@ import { Socket } from 'socket.io';
 import * as jwt from 'jsonwebtoken';
 import { decode } from 'node:querystring';
 import { SendAnswerDto } from './dto/sendAnswer.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class InGameService {
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService
+  ) { }
   async send_answer(data: SendAnswerDto, timers: any, client: Socket, user_id: string) {
     const room = await this.find_room(data.id)
     const current_quest = room.quest.find((elem) => elem.id == room.currentQuest)
@@ -301,7 +305,7 @@ export class InGameService {
         throw new UnauthorizedException('Token is required');
       }
 
-      const decoded = jwt.verify(token, process.env.SECRET);
+      const decoded = this.jwtService.verify(token);
       if (!decoded) {
         throw new UnauthorizedException('Token is required');
       }
