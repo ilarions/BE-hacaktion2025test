@@ -7,7 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 const S3 = require('aws-sdk/clients/s3');
 import * as Multer from 'multer';
 import { create_photo } from 'src/utils/create_photo';
-import { remove_photo } from 'src/utils/remove_photo';
+import { remove_photo } from 'src/utils/manager_photo';
 
 @Injectable()
 export class QuizService {

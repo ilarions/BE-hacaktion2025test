@@ -4,10 +4,8 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import * as jwt from 'jsonwebtoken';
 import { ILogin } from './dto/login.dto';
 import { IRegistretion } from './dto/register.dto';
-import { IEndRegister } from './dto/end_register.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
@@ -53,24 +51,17 @@ export class AuthService {
           questComplete: { connect: [] },
         },
       });
-      console.log('aaa');
-
       const temporaryToken = generateToken({
         id: newUser.id,
         secret: process.env.TEMPORARY_TOKEN ?? 'ff',
         time: '15m',
       });
-      console.log(temporaryToken);
-      //    const token = jwt.sign({ id: newUser.id }, process.env.SECRET, {
-      //  expiresIn: '1h',
-      //  });
       res.cookie('temporarytoken', temporaryToken, {
         httpOnly: true,
         secure: false,
         sameSite: 'strict',
       });
-      console.log('ept');
-      return 'This action returns all cats';
+      return true
     } catch (e) {
       throw new NotFoundException(e);
     }
@@ -183,18 +174,13 @@ export class AuthService {
   }
   async login(data: ILogin, res: Response) {
     try {
-      console.log('1')
       const user = await this.prisma.user.findFirst({
         where: {
           email: data.email,
         },
       });
-      console.log('2')
-      if (!user) {
+      if (!user || user.password == '') {
         throw new NotFoundException('This email is not registered');
-      }
-      if (user.password == '') {
-        throw new NotFoundException('enter by google');
       }
       const verifyPassword = await bcrypt.compareSync(data.password, user.password);
 
@@ -207,7 +193,7 @@ export class AuthService {
         secure: process.env.NODE_DEV === 'production',
         sameSite: 'strict',
       });
-      return token;
+      return true;
     } catch (e) {
       throw new NotFoundException(e);
     }
@@ -224,4 +210,5 @@ export class AuthService {
     }
     return null;
   }
+
 }

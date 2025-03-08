@@ -1,15 +1,11 @@
 import { AuthService } from './auth.service';
 import { IRegistretion } from './dto/register.dto';
-import { IEndRegister } from './dto/end_register.dto';
 import { ILogin } from './dto/login.dto';
 import {
   Controller,
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   UsePipes,
   ValidationPipe,
   Query,
@@ -21,7 +17,6 @@ import { Response } from 'express';
 import { JwtAuthGuard } from './guards/auth.guard';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('auth')

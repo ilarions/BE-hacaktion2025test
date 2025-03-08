@@ -17,11 +17,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     private readonly oauthService: OauthService,
   ) {
     super({
-      clientID: googleConfiguration.clientID, // Исправлено
+      clientID: googleConfiguration.clientID,
       clientSecret: googleConfiguration.clientSecret,
       callbackURL: googleConfiguration.callbackURL,
       scope: ['email', 'profile'],
-      passReqToCallback: false, // Добавлено, чтобы избежать ошибки
+      passReqToCallback: false,
     } as StrategyOptions);
   }
 
@@ -31,7 +31,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback,
   ) {
-    console.log({ profile });
     const data = {
       email: profile.emails[0].value,
       name: profile.name.givenName,
