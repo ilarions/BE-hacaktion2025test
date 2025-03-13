@@ -29,6 +29,8 @@ export class UserController {
     return this.userService.get_user(req);
   }
   @Post("changename")
+  @UseGuards(JwtAuthGuard)
+
   async change_name(@Body() data: ChangeNameDto, @Req() req: any) {
     return this.userService.change_name(data, req)
   }

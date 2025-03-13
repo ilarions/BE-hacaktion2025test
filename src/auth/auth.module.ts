@@ -12,9 +12,9 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 
 @Global()
 @Module({
-  imports: [UserModule, PassportModule.register({ session: true }), JwtModule.register({
+  imports: [UserModule, PassportModule.register({ session: false }), JwtModule.register({
     secret: jwtConstants.secret,
-    signOptions: { expiresIn: '60s' },
+    signOptions: { expiresIn: '1h' },
   }),],
   controllers: [AuthController],
   providers: [AuthService, PrismaService, LocalStrategy, JwtStrategy],

@@ -12,6 +12,7 @@ import {
   UploadedFile,
   UploadedFiles,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
 import { CreateQuizDto } from './dto/createQuiz.dto';
@@ -30,6 +31,7 @@ import {
   ApiQuery,
   ApiConsumes,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 
 const multer = Multer({
   storage: Multer.memoryStorage(),
@@ -41,6 +43,7 @@ const multer = Multer({
 @Controller('quiz')
 export class QuizController {
   constructor(private readonly quizService: QuizService) { }
+
 
   @Get('get')
   @ApiOperation({ summary: 'Get products with pagination' })
@@ -62,9 +65,10 @@ export class QuizController {
   ) {
     const pageNumber = parseInt(page, 10) || 1;
     const limitNumber = parseInt(limit, 10) || 10;
-
     return this.quizService.get(pageNumber, limitNumber);
   }
+
+
   @Get('getone')
   @ApiOperation({ summary: 'Get a single product by ID' })
   @ApiQuery({
@@ -76,6 +80,7 @@ export class QuizController {
   get_one(@Query('id') id: string) {
     return this.quizService.get_one(id);
   }
+
 
   @Post('createquiz')
   @UseInterceptors(
@@ -90,7 +95,7 @@ export class QuizController {
     description:
       'The data for the new quiz, including a file upload for the main image.',
   })
-  @UsePipes(new ValidationPipe({ transform: true }))
+  @UseGuards(JwtAuthGuard)
   async create_quiz(
     @UploadedFiles() file: { mainImg?: Multer.File },
     @Body() data: CreateQuizDto,
@@ -100,12 +105,8 @@ export class QuizController {
     return await this.quizService.create_quiz(file, data, req);
   }
 
+
   @Post('changequiz')
-  @UseInterceptors(
-    FileFieldsInterceptor([{ name: 'mainImg', maxCount: 1 }], {
-      storage: Multer.memoryStorage(),
-    }),
-  )
   @ApiOperation({ summary: 'Create a new quiz' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -113,8 +114,12 @@ export class QuizController {
     description:
       'The data for the new quiz, including a file upload for the main image.',
   })
-  @UsePipes(new ValidationPipe({ transform: true }))
-
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'mainImg', maxCount: 1 }], {
+      storage: Multer.memoryStorage(),
+    }),
+  )
+  @UseGuards(JwtAuthGuard)
   async change_quiz(
     @UploadedFiles() file: { mainImg?: Multer.File },
     @Body() data: ChangeQuizDto,
@@ -128,7 +133,6 @@ export class QuizController {
   @ApiBody({
     type: DeleteQuizRemoveDto,
   })
-  @UsePipes(new ValidationPipe({ transform: true }))
   async remove_quiz(@Query('id') id: string, @Req() req: any) {
     return await this.quizService.remove_quiz(id, req);
   }

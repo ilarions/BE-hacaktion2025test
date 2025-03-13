@@ -16,7 +16,7 @@ export class UserService {
     try {
       const user = this.prisma.user.findFirst({
         where: {
-          id: req.id,
+          id: req.user.id,
         },
         include: { yourQuiz: true, questComplete: true },
       });
@@ -25,7 +25,6 @@ export class UserService {
       }
       return user;
     } catch (e) {
-      console.log(e)
       throw new NotFoundException(e);
     }
   }

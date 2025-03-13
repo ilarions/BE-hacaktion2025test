@@ -3,16 +3,16 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 const S3 = require('aws-sdk/clients/s3');
 import * as Multer from 'multer';
-import { create_photo } from 'src/utils/create_photo';
-import { remove_photo } from 'src/utils/manager_photo';
+import { create_photo } from '../utils/create_photo';
+import { remove_photo } from '../utils/manager_photo';
 
 @Injectable()
 export class QuizService {
   constructor(private prisma: PrismaService) { }
-  async get(page, limit) {
+  async get(page: number, limit: number) {
     try {
       const skip = (page - 1) * limit;
       const [quiz, total] = await Promise.all([
@@ -35,7 +35,7 @@ export class QuizService {
 
   }
 
-  async get_one(id) {
+  async get_one(id: string) {
     try {
       const quiz = await this.prisma.quiz.findFirst({
         where: {
@@ -71,15 +71,15 @@ export class QuizService {
           time: data.time,
           quests: { connect: [] },
           questComplete: { connect: [] },
-          authorId: req.id,
+          authorId: req.user.id,
         },
       });
-      console.log(quiz);
       return quiz;
     } catch (e) {
       throw new NotFoundException(e);
     }
   }
+
   async change_quiz(file: Multer.File, data, req) {
     try {
       const id = data.id;
@@ -87,7 +87,7 @@ export class QuizService {
       const quiz = await this.prisma.quiz.update({
         where: {
           id: id,
-          authorId: req.id,
+          authorId: req.user.id,
         },
         data: data,
         include: {
@@ -110,7 +110,7 @@ export class QuizService {
         update_quiz = await this.prisma.quiz.update({
           where: {
             id: id,
-            authorId: req.id,
+            authorId: req.user.id,
           },
           data: {
             ...data,
@@ -148,7 +148,7 @@ export class QuizService {
       await this.prisma.quiz.delete({
         where: {
           id: id,
-          authorId: req.id,
+          authorId: req.user.id,
         },
       });
       return 'remove successfully';

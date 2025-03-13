@@ -44,12 +44,12 @@ describe('UserService', () => {
 
   describe('getOne', () => {
     it('should get a single cat', () => {
-      expect(service.get_user('a uuid')).resolves.toEqual(oneUser);
+      expect(service.get_user({ user: 'a uuid' })).resolves.toEqual(oneUser);
     });
   });
   describe("updateName", () => {
     it("should be return update user", () => {
-      expect(service.change_name(oneUser, 11)).resolves.toEqual(updateUser);
+      expect(service.change_name(oneUser, { user: 11 })).resolves.toEqual(updateUser);
     })
   })
 })

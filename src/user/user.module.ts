@@ -13,8 +13,4 @@ import { AuthModule } from '../auth/auth.module';
 
   exports: [UserService]
 })
-export class UserModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(UserVerifyMiddleware).forRoutes(UserController);
-  }
-}
+export class UserModule { }

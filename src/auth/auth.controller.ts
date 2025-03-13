@@ -59,7 +59,6 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  @UsePipes(new ValidationPipe({ transform: true }))
   login(@Body() data: ILogin, @Res({ passthrough: true }) res: Response) {
     console.log("Inside login controller", data);
     return this.authService.login(data, res);
