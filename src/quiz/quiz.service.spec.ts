@@ -43,13 +43,14 @@ const quiz = {
   "authorId": "67a656e041a39342ceebd91c"
 }
 
-
+const createPhotoMock = jest.fn().mockResolvedValue('mocked-photo-url');
 const db = {
   quiz: {
     findMany: jest.fn().mockResolvedValue(quizes),
     count: jest.fn().mockResolvedValue(2),
     findFirst: jest.fn().mockResolvedValue(quiz),
     update: jest.fn().mockResolvedValue(updateUser),
+    create: jest.fn().mockResolvedValue(quiz),
   },
 };
 
@@ -57,8 +58,10 @@ const db = {
 
 describe('UserService', () => {
   let service: QuizService;
-
+  let createPhoto: jest.Mock;
   let prisma: PrismaService;
+
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -67,12 +70,17 @@ describe('UserService', () => {
           provide: PrismaService,
           useValue: db,
         },
+        {
+          provide: 'create_photo',
+          useValue: createPhotoMock,
+        }
       ],
     }).compile();
 
 
     service = module.get<QuizService>(QuizService);
     prisma = module.get<PrismaService>(PrismaService);
+    createPhoto = module.get<jest.Mock>('create_photo')
   });
 
   it('should return paginated quizzes with total count and totalPages', async () => {
@@ -100,5 +108,24 @@ describe('UserService', () => {
     it("should be return update user", () => {
       expect(service.get_one("11")).resolves.toEqual(quiz);
     })
+  })
+
+
+
+
+
+
+  describe("create_quiz", () => {
+    it('should call create_photo when creating a quiz', async () => {
+      const file = {
+        mainImg: [{ buffer: Buffer.from('image-data') }]
+      };
+      const data = { title: 'Test Quiz', description: 'Test Description', time: 30 };
+      const req = { user: { id: 1 } };
+
+      const quiz = await service.create_quiz(file, data, req);
+
+      expect(quiz).toHaveProperty('title', 'TOP Lore');
+    });
   })
 })

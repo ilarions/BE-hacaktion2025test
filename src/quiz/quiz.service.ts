@@ -2,16 +2,19 @@ import {
   Injectable,
   UnauthorizedException,
   NotFoundException,
+  Inject,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 const S3 = require('aws-sdk/clients/s3');
 import * as Multer from 'multer';
 import { create_photo } from '../utils/create_photo';
 import { remove_photo } from '../utils/manager_photo';
-
 @Injectable()
 export class QuizService {
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject('create_photo') private readonly createPhoto: (fileBuffer: Buffer) => Promise<string>,
+  ) { }
   async get(page: number, limit: number) {
     try {
       const skip = (page - 1) * limit;
@@ -60,7 +63,7 @@ export class QuizService {
     try {
       let img = '';
       if (file?.mainImg && file.mainImg.length > 0) {
-        img = await create_photo(file.mainImg[0]);
+        img = await this.createPhoto(file.mainImg[0]);
       }
       const quiz = await this.prisma.quiz.create({
         data: {
