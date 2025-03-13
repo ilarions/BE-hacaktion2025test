@@ -30,6 +30,7 @@ export const create_photo = async (file) => {
     const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REGION}.amazonaws.com/${name}`;
     return fileUrl;
   } catch (error) {
+    console.error(error)
     throw new Error('Error uploading file to S3.');
   }
 };

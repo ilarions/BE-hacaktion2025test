@@ -10,6 +10,7 @@ import { AnswerModule } from './answer/answer.module';
 import { RoomQuestModule } from './room_quest/room_quest.module';
 import { JwtService } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthModule } from './auth/auth.module';
     InGameModule,
     AnswerModule,
     RoomQuestModule,
+    AwsModule,
   ],
   providers: [JwtService],
 })

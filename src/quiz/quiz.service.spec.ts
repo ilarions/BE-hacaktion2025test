@@ -1,3 +1,4 @@
+import { AwsService } from "../aws/aws.service";
 import { PrismaService } from "../prisma/prisma.service";
 import { QuizService } from "./quiz.service";
 import { Test, TestingModule } from '@nestjs/testing';
@@ -53,6 +54,12 @@ const db = {
     create: jest.fn().mockResolvedValue(quiz),
   },
 };
+const aws = {
+  createPhoto: jest.fn().mockResolvedValue("mocked-photo-url"),
+};
+
+
+
 
 
 
@@ -60,7 +67,7 @@ describe('UserService', () => {
   let service: QuizService;
   let createPhoto: jest.Mock;
   let prisma: PrismaService;
-
+  let aws: AwsService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -71,8 +78,8 @@ describe('UserService', () => {
           useValue: db,
         },
         {
-          provide: 'create_photo',
-          useValue: createPhotoMock,
+          provide: AwsService,
+          useValue: aws,
         }
       ],
     }).compile();
@@ -80,7 +87,8 @@ describe('UserService', () => {
 
     service = module.get<QuizService>(QuizService);
     prisma = module.get<PrismaService>(PrismaService);
-    createPhoto = module.get<jest.Mock>('create_photo')
+    aws = module.get<AwsService>(AwsService);
+
   });
 
   it('should return paginated quizzes with total count and totalPages', async () => {
@@ -111,21 +119,15 @@ describe('UserService', () => {
   })
 
 
-
-
-
-
   describe("create_quiz", () => {
-    it('should call create_photo when creating a quiz', async () => {
-      const file = {
-        mainImg: [{ buffer: Buffer.from('image-data') }]
-      };
-      const data = { title: 'Test Quiz', description: 'Test Description', time: 30 };
+    it("should call createPhoto when creating a quiz", async () => {
+      const file = { mainImg: [{ buffer: Buffer.from("image-data") }] };
+      const data = { title: "Test Quiz", description: "Test Description", time: 30 };
       const req = { user: { id: 1 } };
 
-      const quiz = await service.create_quiz(file, data, req);
+      await service.create_quiz(file, data, req);
 
-      expect(quiz).toHaveProperty('title', 'TOP Lore');
+      expect(aws.createPhoto).toHaveBeenCalledWith(file.mainImg[0].buffer);
     });
-  })
+  });
 })

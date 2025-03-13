@@ -9,11 +9,12 @@ const S3 = require('aws-sdk/clients/s3');
 import * as Multer from 'multer';
 import { create_photo } from '../utils/create_photo';
 import { remove_photo } from '../utils/manager_photo';
+import { AwsService } from '../aws/aws.service';
 @Injectable()
 export class QuizService {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject('create_photo') private readonly createPhoto: (fileBuffer: Buffer) => Promise<string>,
+    private readonly awsService: AwsService
   ) { }
   async get(page: number, limit: number) {
     try {
@@ -62,8 +63,9 @@ export class QuizService {
   async create_quiz(file: Multer.File, data, req) {
     try {
       let img = '';
+      console.log("sok")
       if (file?.mainImg && file.mainImg.length > 0) {
-        img = await this.createPhoto(file.mainImg[0]);
+        img = await this.awsService.createPhoto(file.mainImg[0]);
       }
       const quiz = await this.prisma.quiz.create({
         data: {
@@ -109,7 +111,6 @@ export class QuizService {
           await remove_photo(quiz.img);
         }
         const img = await create_photo(file.mainImg[0]);
-
         update_quiz = await this.prisma.quiz.update({
           where: {
             id: id,
@@ -131,7 +132,6 @@ export class QuizService {
 
       }
       return { update_quiz };
-
     } catch (e) {
       console.log(e)
       throw new NotFoundException(e);
