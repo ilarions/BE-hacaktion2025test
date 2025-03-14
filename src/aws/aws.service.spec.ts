@@ -2,13 +2,18 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AwsService } from './aws.service';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // Import ConfigModule and ConfigService
 
-jest.mock('aws-sdk', () => {
-  const mockS3Instance = {
-    upload: jest.fn().mockReturnThis(),
-    promise: jest.fn().mockResolvedValue({ Location: 'https://mock-s3-url.com/file.jpg' }), // Mock resolved value
+jest.mock('@aws-sdk/client-s3', () => {
+  return {
+    S3Client: jest.fn(() => ({
+      send: jest.fn().mockResolvedValue({}),
+    })),
+    PutObjectCommand: jest.fn(),
+    DeleteObjectCommand: jest.fn(),
   };
-  return { S3: jest.fn(() => mockS3Instance) };
 });
+
+
+
 
 describe('AwsService', () => {
   let service: AwsService;
@@ -46,66 +51,16 @@ describe('AwsService', () => {
     configService = module.get<ConfigService>(ConfigService);
   });
 
+
   it('should upload a file and return its URL', async () => {
     const file = {
       buffer: Buffer.from('test-file'),
       mimetype: 'image/jpeg',
     };
 
-    expect(await service.createPhoto(file)).toBe('https://mock-bucket-name.s3.us-east-1.amazonaws.com/random-name');
+    const url = await service.createPhoto(file);
+
+    expect(url).toMatch(/^https:\/\/mock-bucket\.s3\.us-east-1\.amazonaws\.com\/\d{12}$/);
   });
+
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

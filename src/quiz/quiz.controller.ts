@@ -82,7 +82,7 @@ export class QuizController {
   }
 
 
-  @Post('createquiz')
+  @Post('create_quiz')
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'mainImg', maxCount: 1 }], {
       storage: Multer.memoryStorage(),

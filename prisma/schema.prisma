@@ -37,7 +37,6 @@ model Quiz {
   author   User   @relation(fields: [authorId], references: [id])
   quests Quest[]
   quizInRoom Room[]
-
   questComplete QuestComplete[] 
 }
 

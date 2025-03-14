@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString ,IsNumber } from 'class-validator';
+import { IsString, IsNumber } from 'class-validator';
 import { File } from 'multer';
 import { Transform } from 'class-transformer';
 export class CreateQuizDto {
@@ -9,9 +9,8 @@ export class CreateQuizDto {
   @ApiProperty({ example: '' })
   description: string;
   @IsNumber()
-    @Transform(({ value }) => Number(value))
-  @ApiProperty({ example: '' }) 
-  time:  number;          
+  @Transform(({ value }) => (isNaN(Number(value)) ? 30 : Number(value))) @ApiProperty({ example: '' })
+  time: number;
 
   @ApiProperty({
     description: 'Main image for the quiz.',

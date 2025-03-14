@@ -63,9 +63,11 @@ export class QuizService {
   async create_quiz(file: Multer.File, data, req) {
     try {
       let img = '';
-      console.log("sok")
+      console.log(file)
+
       if (file?.mainImg && file.mainImg.length > 0) {
         img = await this.awsService.createPhoto(file.mainImg[0]);
+        console.log(img)
       }
       const quiz = await this.prisma.quiz.create({
         data: {
@@ -81,6 +83,7 @@ export class QuizService {
       });
       return quiz;
     } catch (e) {
+      console.log(e)
       throw new NotFoundException(e);
     }
   }

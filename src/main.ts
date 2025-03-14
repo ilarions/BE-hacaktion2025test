@@ -11,7 +11,7 @@ async function bootstrap() {
     origin: ['http://localhost:3000', 'https://fe-hackatio2025-test.vercel.app'],
     credentials: true,
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   const config = new DocumentBuilder()
     .setTitle('Cats example')
     .setDescription('The cats API description')
